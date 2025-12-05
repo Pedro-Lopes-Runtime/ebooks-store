@@ -1,0 +1,24 @@
+<h1>Show Author</h1>
+
+<div>
+	<p>
+    <strong>Name: </strong>
+    <%= @author.name %>
+  </p>
+	<table>
+    <thead>
+      <th>Title</th>
+      <th>Description</th>
+    </thead>
+    <tbody>
+			<% @author.ebooks.each do |ebook|%>
+			<tr>
+				<td><%= link_to ebook.title, ebook %></td>
+				<td><%= ebook.description %></td>
+			</tr>
+			<% end %>
+		</tbody>
+  </table>
+
+  <p><%= link_to 'Return to authors listing', authors_path %></p>
+</div>

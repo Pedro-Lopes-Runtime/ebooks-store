@@ -1,0 +1,24 @@
+<h1>Listing all Authors</h1>
+
+<div>
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @authors.each do |author|%>
+			<tr>
+				<td><%= link_to author.name, author %></td>
+				<td><%= link_to 'Edit', edit_author_path(author.id) %></td>
+				<td><%= link_to 'Delete', author_path(author.id), 
+								data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this Author?'} %></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+
+	<p><%= link_to 'Create Author', new_author_path %></p>
+</div>

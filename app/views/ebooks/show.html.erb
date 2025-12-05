@@ -1,0 +1,18 @@
+<h1>Show Ebook</h1>
+
+<div>
+	<p>
+    <strong>Name: </strong>
+    <%= @ebook.title %>
+  </p>
+	<p>
+    <strong>Description: </strong>
+    <%= @ebook.description %>
+  </p>
+	<p>
+    <strong>Author: </strong>
+    <%= link_to @ebook.author.name, @ebook.author %>
+  </p>
+
+  <p><%= link_to 'Return to ebook listing', ebooks_path %></p>
+</div>
