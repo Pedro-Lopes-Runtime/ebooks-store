@@ -31,12 +31,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_05_174516) do
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "ebook_status_id"
-    t.integer "status_id"
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_ebooks_on_author_id"
     t.index ["ebook_status_id"], name: "index_ebooks_on_ebook_status_id"
-    t.index ["status_id"], name: "index_ebooks_on_status_id"
   end
 
   create_table "sellers", force: :cascade do |t|
