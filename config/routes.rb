@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   root "ebooks#index"
   resources :ebooks
   resources :authors
+  resources :users, except: [ :index ]
 end
