@@ -1,5 +1,5 @@
 <% if @author.errors.any? %>
-  <h3>The author could not be saved because of the following errors:</h2>
+  <h3>The author could not be saved because of the following errors:</h3>
   <ul>
     <% @author.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>

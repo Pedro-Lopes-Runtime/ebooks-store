@@ -17,7 +17,7 @@ class AuthorsController < ApplicationController
     if @author.save
       redirect_to @author
     else
-      render "new"
+      render "new", status: 422
     end
   end
 
@@ -28,7 +28,7 @@ class AuthorsController < ApplicationController
     if @author.update(author_params)
       redirect_to @author
     else
-      render "edit"
+      render "edit", status: 422
     end
   end
 

@@ -17,7 +17,7 @@ class EbooksController < ApplicationController
     if @ebook.save
       redirect_to @ebook
     else
-      render "new"
+      render "new", status: 422
     end
   end
 
@@ -28,7 +28,7 @@ class EbooksController < ApplicationController
     if @ebook.update(ebook_params)
       redirect_to @ebook
     else
-      render "edit"
+      render "edit", status: 422
     end
   end
 

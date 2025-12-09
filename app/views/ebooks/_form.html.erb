@@ -1,5 +1,5 @@
 <% if @ebook.errors.any? %>
-  <h3>The ebook could not be saved because of the following errors:</h2>
+  <h3>The ebook could not be saved because of the following errors:</h3>
   <ul>
     <% @ebook.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
