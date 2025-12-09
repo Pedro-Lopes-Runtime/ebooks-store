@@ -13,5 +13,7 @@ Rails.application.routes.draw do
   root "ebooks#index"
   resources :ebooks
   resources :authors
-  resources :users, except: [ :index ]
+  resources :users do
+    post "update_status", on: :member
+  end
 end
