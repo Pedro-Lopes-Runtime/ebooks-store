@@ -20,6 +20,10 @@
     <strong><%= f.label :author%></strong><br/>
     <%= f.select :author_id, Author.all.pluck(:name, :id)%>
   </p>
+  <p>
+    <strong><%= f.label :status%></strong><br/>
+    <%= f.select :ebook_status_id, EbookStatus.all.pluck(:name, :id)%>
+  </p>
 
   <p><%= f.submit %></p>
 <% end %>

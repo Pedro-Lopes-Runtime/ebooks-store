@@ -1,5 +1,5 @@
 class EbooksController < ApplicationController
-  before_action :set_ebook, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_ebook, only: [ :show, :edit, :update, :destroy, :update_status ]
 
   def index
     @ebooks = Ebook.all
@@ -36,6 +36,17 @@ class EbooksController < ApplicationController
     @ebook.destroy
   end
 
+  def update_status
+    case @ebook.ebook_status.name
+    when "Draft"
+      @ebook.ebook_status = EbookStatus.find_by(name: "Pending")
+    when "Pending"
+      @ebook.ebook_status = EbookStatus.find_by(name: "Live")
+    end
+    @ebook.save
+    redirect_back_or_to "/"
+  end
+
   private
 
   def set_ebook
@@ -43,6 +54,6 @@ class EbooksController < ApplicationController
   end
 
   def ebook_params
-    params.require(:ebook).permit(:title, :description, :author_id)
+    params.require(:ebook).permit(:title, :description, :author_id, :ebook_status_id)
   end
 end

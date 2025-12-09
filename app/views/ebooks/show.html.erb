@@ -13,6 +13,10 @@
     <strong>Author: </strong>
     <%= link_to @ebook.author.name, @ebook.author %>
   </p>
+	<p>
+    <strong>Status: </strong>
+    <%= @ebook.ebook_status.name %>
+  </p>
 
   <p><%= link_to 'Return to ebook listing', ebooks_path %></p>
 </div>
