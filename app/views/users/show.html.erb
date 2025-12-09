@@ -1,0 +1,26 @@
+<h1>Show User</h1>
+
+<div>
+	<p>
+    <strong>Username: </strong>
+    <%= @user.username %>
+  </p>
+	<p>
+    <strong>Displayname: </strong>
+    <%= @user.displayname %>
+  </p>
+	<p>
+    <strong>Email: </strong>
+    <%= @user.email %>
+  </p>
+	<p>
+    <strong>Status: </strong>
+    <%= @user.status %>
+  </p>
+	<p>
+    <strong>Type: </strong>
+    <%= @user.profileable_type %>
+  </p>
+
+  <p><%= link_to 'Return to user listing', users_path %></p>
+</div>

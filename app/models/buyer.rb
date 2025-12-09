@@ -1,3 +1,3 @@
 class Buyer < ApplicationRecord
-  has_one :user, as => :profileable
+  has_one :user, as: :profileable
 end

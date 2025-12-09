@@ -9,5 +9,4 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false },
                     length: { maximum: 100 },
                     format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :status, presence: true
 end
