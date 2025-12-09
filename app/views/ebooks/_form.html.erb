@@ -24,6 +24,10 @@
     <strong><%= f.label :status%></strong><br/>
     <%= f.select :ebook_status_id, EbookStatus.all.pluck(:name, :id)%>
   </p>
+  <p>
+    <strong><%= f.label :preview%></strong><br/>
+    <%= f.file_field :preview %>
+  </p>
 
   <p><%= f.submit %></p>
 <% end %>
