@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "ebooks#index"
   resources :ebooks do
-    post "update_status", on: :member
+    member do
+      get "preview"
+      post "update_status"
+      post "purchase"
+    end
   end
   resources :authors
   resources :users do
