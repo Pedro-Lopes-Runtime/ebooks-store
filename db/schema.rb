@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_09_161027) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_10_153702) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -48,6 +48,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_161027) do
   create_table "buyers", force: :cascade do |t|
   end
 
+  create_table "ebook_purchases", force: :cascade do |t|
+    t.integer "ebook_id"
+    t.float "price"
+    t.integer "purchase_id"
+    t.index ["ebook_id"], name: "index_ebook_purchases_on_ebook_id"
+    t.index ["purchase_id"], name: "index_ebook_purchases_on_purchase_id"
+  end
+
   create_table "ebook_statistics", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "ebook_id"
@@ -78,10 +86,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_161027) do
     t.index ["seller_id"], name: "index_ebooks_on_seller_id"
   end
 
+  create_table "purchases", force: :cascade do |t|
+    t.integer "buyer_id"
+    t.datetime "created_at", null: false
+    t.float "total_price"
+    t.datetime "updated_at", null: false
+    t.index ["buyer_id"], name: "index_purchases_on_buyer_id"
+  end
+
   create_table "sellers", force: :cascade do |t|
   end
 
   create_table "users", force: :cascade do |t|
+    t.float "balance"
     t.datetime "created_at", null: false
     t.string "displayname"
     t.string "email"
