@@ -1,11 +1,14 @@
 class EbooksController < ApplicationController
-  before_action :set_ebook, only: [ :show, :edit, :update, :destroy, :update_status ]
+  before_action :set_ebook, only: [ :show, :edit, :update, :destroy, :update_status, :preview, :purchase ]
 
   def index
     @ebooks = Ebook.all
   end
 
   def show
+    stats = @ebook.ebook_statistic
+    stats.visits += 1
+    stats.save
   end
 
   def new
@@ -15,6 +18,7 @@ class EbooksController < ApplicationController
   def create
     @ebook = Ebook.new(ebook_params)
     if @ebook.save
+      @statistics = EbookStatistic.create(ebook: @ebook)
       redirect_to @ebook
     else
       render "new", status: 422

@@ -31,7 +31,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    debugger
     if @user.update(params.require(:user).permit(:username, :displayname, :email, :status))
       redirect_to @user
     else
