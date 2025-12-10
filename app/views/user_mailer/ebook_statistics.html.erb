@@ -1,0 +1,10 @@
+<h1><%= @ebook.title %> Statistics</h1>
+<p>Page visits: <%= @statistics.visits%></p>
+<p>Preview views: <%= @statistics.preview_views%></p>
+<p>Purhcases: <%= @statistics.purchases%></p>
+<h3>Info from last purhcases:</h3>
+
+<% @last_purhcase_visitor = @statistics.visitor_statistics.last %>
+<p>IP: <%= @last_purhcase_visitor.ip%></p>
+<p>Country: <%= @last_purhcase_visitor.location%></p>
+<p>Browser: <%= @last_purhcase_visitor.browser%></p>
