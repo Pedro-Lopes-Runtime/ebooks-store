@@ -14,6 +14,10 @@
     <%= link_to @ebook.author.name, @ebook.author %>
   </p>
 	<p>
+    <strong>Price: </strong>
+    <%= @ebook.price.present? ? @ebook.price : "Free" %>
+  </p>
+	<p>
     <strong>Status: </strong>
     <%= @ebook.ebook_status.name %>
   </p>
@@ -23,6 +27,11 @@
       <%= image_tag @ebook.preview.representation(resize_to_limit: [300, 300]) %>
     </p>
   <% end %>
+  <%= link_to "Preview", preview_ebook_path(@ebook.id) %>
+
+  <p>
+    <%= button_to "Buy", purchase_ebook_path(@ebook.id) %>
+  </p>
 
   <p><%= link_to 'Return to ebook listing', ebooks_path %></p>
 </div>

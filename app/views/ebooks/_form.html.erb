@@ -21,6 +21,14 @@
     <%= f.select :author_id, Author.all.pluck(:name, :id)%>
   </p>
   <p>
+    <strong><%= f.label :price%></strong><br/>
+    <%= f.number_field :price, step: "0.01"%>
+  </p>
+  <p>
+    <strong><%= f.label :seller%></strong><br/>
+    <%= f.select :seller_id, Seller.all.map(&:user).pluck(:displayname, :id) %>
+  </p>
+  <p>
     <strong><%= f.label :status%></strong><br/>
     <%= f.select :ebook_status_id, EbookStatus.all.pluck(:name, :id)%>
   </p>

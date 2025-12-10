@@ -16,7 +16,7 @@
 			<tr>
 				<td><%= link_to ebook.title, ebook %></td>
 				<td><%= ebook.description %></td>
-				<td><%= ebook.author.name %></td>
+				<td><%= link_to ebook.author.name, author_path(ebook.author.id) %></td>
 				<td><%= ebook.ebook_status.name %></td>
 				<% if ebook.ebook_status.name != 'Live' %>
 					<td><%= link_to 'Advance status', update_status_ebook_path(ebook.id),
