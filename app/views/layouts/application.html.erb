@@ -24,8 +24,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="bg-dark-subtle">
     <%= render 'layouts/navbar'%>
-    <%= yield %>
+    <% if flash[:alert] %>
+      <div style="color: var(--bs-form-invalid-color)"><%= flash[:alert] %></div>
+    <% end %>
+    <div class="p-4">
+      <%= yield %>
+    </div>
   </body>
 </html>
