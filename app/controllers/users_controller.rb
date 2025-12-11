@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    if params.require(:user).permit(:profileable_type) == "Buyer"
+    if params[:user][:profileable_type] == "Buyer"
       user_type = Buyer.create
     else
       user_type = Seller.create
