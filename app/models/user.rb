@@ -9,4 +9,15 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false },
                     length: { maximum: 100 },
                     format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :balance, numericality: { greater_than_or_equal_to: 0 }
+
+  def pay(value)
+    self.balance -= value
+    save
+  end
+
+  def deposit(value)
+    self.balance += value
+    save
+  end
 end
