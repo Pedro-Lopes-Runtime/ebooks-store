@@ -59,9 +59,22 @@ class EbooksController < ApplicationController
   end
 
   def purchase
-    stats = @ebook.ebook_statistic
-    stats.purchases += 1
-    stats.save
+    buyer = Buyer.first
+
+    begin
+      ActiveRecord::Base.transaction do
+        raise ActiveRecord::Rollback if buyer.balance < @ebook.price
+
+        Purchase.create(buyer: buyer, ebook: @ebook, price: @ebook.price)
+        @ebook.ebook_statistic.update_purchases
+        @ebook.seller.user.deposit(@ebook.price/10)
+        buyer.user.pay(@ebook.price)
+      end
+    rescue
+      flash[:alert] = "An error occurred and the purchase could not be completed. Please try again later"
+      return redirect_back_or_to "/"
+    end
+
     VisitorStatistic.create(ebook_statistic: @ebook.ebook_statistic, ip: request.remote_ip, browser: Browser.new(request.env["HTTP_USER_AGENT"]).name, location: request.location.country)
     respond_to do |format|
       UserMailer.with(ebook: @ebook).sale_commission.deliver_now
