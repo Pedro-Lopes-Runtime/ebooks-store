@@ -89,16 +89,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_10_153702) do
   create_table "purchases", force: :cascade do |t|
     t.integer "buyer_id"
     t.datetime "created_at", null: false
-    t.float "total_price"
+    t.integer "ebook_id"
+    t.float "price", default: 0.0
     t.datetime "updated_at", null: false
     t.index ["buyer_id"], name: "index_purchases_on_buyer_id"
+    t.index ["ebook_id"], name: "index_purchases_on_ebook_id"
   end
 
   create_table "sellers", force: :cascade do |t|
   end
 
   create_table "users", force: :cascade do |t|
-    t.float "balance"
+    t.float "balance", default: 0.0
     t.datetime "created_at", null: false
     t.string "displayname"
     t.string "email"
