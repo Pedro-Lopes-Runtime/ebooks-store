@@ -4,6 +4,7 @@ class Ebook < ApplicationRecord
   belongs_to :seller
   has_one :ebook_statistic
   has_one_attached :preview
+  has_one_attached :cover
   validates :title, presence: true, length: { minimum: 5, maximum: 50 }
   validates :description, presence: true, length: { minimum: 10, maximum: 300 }
 end

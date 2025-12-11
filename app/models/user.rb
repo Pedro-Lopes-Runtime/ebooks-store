@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   belongs_to :profileable, polymorphic: true
+  has_one_attached :profile_image
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
                        length: { minimum: 5, maximum: 30 }

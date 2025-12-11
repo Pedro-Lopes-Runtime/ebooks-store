@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     else
       user_type = Seller.create
     end
-    @user = User.new(params.require(:user).permit(:username, :displayname, :email, :status).merge(profileable: user_type))
+    @user = User.new(user_params.merge(profileable: user_type))
     if @user.save
       redirect_to @user
     else
@@ -31,7 +31,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update(params.require(:user).permit(:username, :displayname, :email, :status))
+    if @user.update(user_params)
       redirect_to @user
     else
       render "edit", status: 422
@@ -55,6 +55,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:username, :displayname, :email, :status).each_value { |v| v.strip! if v.is_a? String }
+    params.require(:user).permit(:username, :displayname, :email, :status, :profile_image).each_value { |v| v.strip! if v.is_a? String }
   end
 end

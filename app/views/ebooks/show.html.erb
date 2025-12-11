@@ -1,6 +1,11 @@
 <h1>Show Ebook</h1>
 
 <div>
+  <% if @ebook.cover.representable? %>
+    <p>
+      <%= image_tag @ebook.cover.representation(resize_to_limit: [300, 300]) %>
+    </p>
+  <% end %>
 	<p>
     <strong>Name: </strong>
     <%= @ebook.title %>
@@ -27,7 +32,9 @@
       <%= image_tag @ebook.preview.representation(resize_to_limit: [300, 300]) %>
     </p>
   <% end %>
-  <%= link_to "Preview", preview_ebook_path(@ebook.id) %>
+  <% if @ebook.preview.present? %>
+    <%= link_to "Preview", preview_ebook_path(@ebook.id) %>
+  <% end %>
 
   <p>
     <%= button_to "Buy", purchase_ebook_path(@ebook.id) %>

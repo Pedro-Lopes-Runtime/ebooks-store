@@ -27,6 +27,10 @@
         <%= f.select :profileable_type, ['Seller', 'Buyer']%>
       </p>
   <% end %>
+  <p>
+    <strong><%= f.label :profile_image%></strong><br/>
+    <%= f.file_field :profile_image %>
+  </p>
 
   <p><%= f.submit %></p>
 <% end %>
