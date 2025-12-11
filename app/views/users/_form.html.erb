@@ -22,11 +22,11 @@
   </p>
   <% if action_name == "new" %>
       <%= f.hidden_field :status, value: true %>
+      <p>
+        <strong><%= f.label :profileable_type%></strong><br/>
+        <%= f.select :profileable_type, ['Seller', 'Buyer']%>
+      </p>
   <% end %>
-  <p>
-    <strong><%= f.label :profileable_type%></strong><br/>
-    <%= f.select :profileable_type, ['Seller', 'Buyer']%>
-  </p>
 
   <p><%= f.submit %></p>
 <% end %>
