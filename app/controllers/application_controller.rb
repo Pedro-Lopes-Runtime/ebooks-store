@@ -36,7 +36,6 @@ class ApplicationController < ActionController::Base
     end
 
     def new_session(user)
-      debugger
       session[:current_user_id] = user.id
     end
 
