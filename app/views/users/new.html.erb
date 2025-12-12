@@ -1,5 +1,31 @@
-<h1>Create new User</h1>
+<h1>Sign Up</h1>
 
-<%= render 'form' %>
+<%= form_with model: @user do |f| %>
+  <p>
+    <strong><%= f.label :username%></strong><br/>
+    <%= f.text_field :username%>
+  </p>
+  <p>
+    <strong><%= f.label :email%></strong><br/>
+    <%= f.email_field :email%>
+  </p>
+  <p>
+    <strong><%= f.label :password%></strong><br/>
+    <%= f.password_field :password%>
+  </p>
+  <p>
+    <strong><%= f.label :password_confirmation%></strong><br/>
+    <%= f.password_field :password_confirmation%>
+  </p>
+  <% if action_name == "new" %>
+      <%= f.hidden_field :status, value: true %>
+      <p>
+        <strong><%= f.label :profileable_type%></strong><br/>
+        <%= f.select :profileable_type, ['Seller', 'Buyer']%>
+      </p>
+  <% end %>
 
-<%= link_to 'Return to user listing', users_path%>
+  <p><%= f.submit "Sign up"%></p>
+<% end %>
+
+<%= link_to 'Cancel', users_path%>

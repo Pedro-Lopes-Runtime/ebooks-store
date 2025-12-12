@@ -1,11 +1,12 @@
 class User < ApplicationRecord
   belongs_to :profileable, polymorphic: true
   has_one_attached :profile_image
+  has_secure_password
+  has_many :sessions, dependent: :destroy
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
                        length: { minimum: 5, maximum: 30 }
-  validates :displayname, presence: true,
-                          length: { maximum: 30 }
+  validates :displayname, length: { maximum: 30 }
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },
                     length: { maximum: 100 },
