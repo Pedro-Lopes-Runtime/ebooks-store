@@ -63,7 +63,7 @@ class EbooksController < ApplicationController
 
     begin
       ActiveRecord::Base.transaction do
-        raise ActiveRecord::Rollback if buyer.balance < @ebook.price
+        raise ActiveRecord::Rollback if buyer.user.balance < @ebook.price
 
         Purchase.create(buyer: buyer, ebook: @ebook, price: @ebook.price)
         @ebook.ebook_statistic.update_purchases
