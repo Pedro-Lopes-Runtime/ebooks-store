@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   before_action :require_authentication
-  helper_method :signed_in?
+  helper_method :signed_in?, :current_user
 
   def self.allow_unauthenticated_access(**actions)
     skip_before_action :require_authentication, **actions
@@ -14,33 +14,33 @@ class ApplicationController < ActionController::Base
 
   private
     def signed_in?
-      find_session_by_cookie
+      current_user
     end
 
-    def require_authentication
-      find_session_by_cookie || request_sign_in
-    end
-
-    def find_session_by_cookie
-      Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    def current_user
+      debugger
+      User.find_by(id: session[:current_user_id]) if session[:current_user_id]
     end
 
     def request_sign_in
-      cookies[:previous_url] = request.url
+      session[:previous_url] = request.url
       redirect_to sign_in_path
     end
 
+    def require_authentication
+      current_user || request_sign_in
+    end
+
     def after_sign_in_url
-      cookies.delete(:previous_url) || root_url
+      session.delete(:previous_url) || root_url
     end
 
     def new_session(user)
-      session = user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip)
-      cookies.signed[:session_id] = { value: session.id, expires: 30.minutes, httponly: :only }
+      debugger
+      session[:current_user_id] = user.id
     end
 
     def sign_out
-      find_session_by_cookie&.destroy
-      cookies.delete(:session_id)
+      session.delete(:current_user_id)
     end
 end

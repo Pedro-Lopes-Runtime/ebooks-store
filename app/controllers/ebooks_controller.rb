@@ -75,7 +75,7 @@ class EbooksController < ApplicationController
       return redirect_back_or_to "/"
     end
 
-    VisitorStatistic.create(ebook_statistic: @ebook.ebook_statistic, ip: request.remote_ip, browser: Browser.new(request.env["HTTP_USER_AGENT"]).name, location: request.location.country)
+    @ebook.ebook_statistic.visitor_statistics.create(ip: request.remote_ip, browser: Browser.new(request.user_agent).name, location: request.location.country)
     respond_to do |format|
       UserMailer.with(ebook: @ebook).sale_commission.deliver_now
       UserMailer.with(ebook: @ebook).ebook_statistics.deliver_now
