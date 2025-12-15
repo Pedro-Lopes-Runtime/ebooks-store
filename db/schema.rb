@@ -105,6 +105,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_125320) do
     t.string "displayname"
     t.string "email"
     t.string "password_digest"
+    t.datetime "password_updated_at", default: "2025-12-12 18:28:43", null: false
     t.integer "profileable_id"
     t.string "profileable_type"
     t.boolean "status"
