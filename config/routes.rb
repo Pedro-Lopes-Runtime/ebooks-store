@@ -24,7 +24,14 @@ Rails.application.routes.draw do
   end
   get "sign_up", to: "users#new"
 
-  resource :sessions, except: [ :new, :destroy ]
   get "sign_in", to: "sessions#new"
+  post "create_session", to: "sessions#create"
   delete "sign_out", to: "sessions#destroy"
+
+  get "forgot_password", to: "passwords#new"
+  post "send_forgot_password_email", to: "passwords#create"
+  get "new_password/:token", to: "passwords#edit", as: :new_password
+  put "update_password/:token", to: "passwords#update", as: :update_password
+  get "expired_password", to: "passwords#expired_password"
+  put "update_expired_password", to: "passwords#update_expired_password"
 end
