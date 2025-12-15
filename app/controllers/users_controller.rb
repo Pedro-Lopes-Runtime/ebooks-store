@@ -22,6 +22,7 @@ class UsersController < ApplicationController
     end
     @user = User.new(params.require(:user).permit(:username, :email, :status, :password, :password_confirmation).merge(profileable: user_type).each_value { |v| v.strip! if v.is_a? String })
     if @user.save
+      UserMailer.with(user: @user).welcome.deliver_later
       redirect_to sign_in_path
     else
       user_type.destroy
