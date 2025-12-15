@@ -34,4 +34,8 @@ class User < ApplicationRecord
     self.balance += value
     save
   end
+
+  def expired_password?
+    self.password_updated_at <= 6.months.ago
+  end
 end
