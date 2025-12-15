@@ -29,7 +29,6 @@ class PasswordsController < ApplicationController
   end
 
   def update_expired_password
-    debugger
     if @current_user.update(params.permit(:password, :password_confirmation))
       redirect_to after_sign_in_url, notice: "Password has been updated."
     else

@@ -27,7 +27,6 @@ class ApplicationController < ActionController::Base
     end
 
     def request_password_reset
-      debugger
       return true if [ expired_password_path, update_expired_password_path ].include? request.path
 
       session[:previous_url] = request.url
