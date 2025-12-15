@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  allow_unauthenticated_access only: [ :new, :create ]
   before_action :set_user, only: [ :show, :edit, :update, :destroy, :update_status ]
 
   def index
@@ -9,6 +10,7 @@ class UsersController < ApplicationController
   end
 
   def new
+    redirect_to root_url if signed_in?
     @user = User.new
   end
 
@@ -18,9 +20,9 @@ class UsersController < ApplicationController
     else
       user_type = Seller.create
     end
-    @user = User.new(user_params.merge(profileable: user_type))
+    @user = User.new(params.require(:user).permit(:username, :email, :status, :password, :password_confirmation).merge(profileable: user_type).each_value { |v| v.strip! if v.is_a? String })
     if @user.save
-      redirect_to @user
+      redirect_to sign_in_path
     else
       user_type.destroy
       render "new", status: 422

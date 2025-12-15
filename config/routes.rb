@@ -19,7 +19,12 @@ Rails.application.routes.draw do
     end
   end
   resources :authors
-  resources :users do
+  resources :users, except: [ :new ] do
     post "update_status", on: :member
   end
+  get "sign_up", to: "users#new"
+
+  resource :sessions, except: [ :new, :destroy ]
+  get "sign_in", to: "sessions#new"
+  delete "sign_out", to: "sessions#destroy"
 end
