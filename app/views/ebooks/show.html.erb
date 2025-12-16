@@ -15,6 +15,10 @@
     <%= @ebook.description %>
   </p>
 	<p>
+    <strong>Tags: </strong>
+    <%= @ebook.tags.pluck(:name) %>
+  </p>
+	<p>
     <strong>Author: </strong>
     <%= link_to @ebook.author.name, @ebook.author %>
   </p>

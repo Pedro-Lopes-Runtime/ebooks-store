@@ -17,6 +17,10 @@
     <%= f.text_area :description%>
   </p>
   <p>
+    <strong><%= f.label :tags%></strong><br/>
+    <%= f.select :tags, Tag.all.pluck(:name, :id)%>
+  </p>
+  <p>
     <strong><%= f.label :author%></strong><br/>
     <%= f.select :author_id, Author.all.pluck(:name, :id)%>
   </p>
@@ -26,7 +30,7 @@
   </p>
   <p>
     <strong><%= f.label :seller%></strong><br/>
-    <%= f.select :seller_id, Seller.all.map(&:user).pluck(:displayname, :id) %>
+    <%= f.select :seller_id, Seller.all.map(&:user).map{ |user| [user.name, user.id] } %>
   </p>
   <p>
     <strong><%= f.label :status%></strong><br/>
