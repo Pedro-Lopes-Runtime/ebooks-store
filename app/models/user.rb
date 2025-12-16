@@ -12,6 +12,18 @@ class User < ApplicationRecord
                     format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :balance, numericality: { greater_than_or_equal_to: 0 }
 
+  before_create :set_password_updated_at
+  before_save :update_password_updated_at, if: :will_save_change_to_password_digest?
+  before_update :update_password_updated_at, if: :will_save_change_to_password_digest?
+
+  def set_password_updated_at
+    self.password_updated_at = self.updated_at
+  end
+
+  def update_password_updated_at
+    self.password_updated_at = DateTime.now
+  end
+
   def pay(value)
     self.balance -= value
     save
@@ -20,5 +32,9 @@ class User < ApplicationRecord
   def deposit(value)
     self.balance += value
     save
+  end
+
+  def expired_password?
+    self.password_updated_at <= 6.months.ago
   end
 end

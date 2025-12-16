@@ -77,8 +77,8 @@ class EbooksController < ApplicationController
 
     @ebook.ebook_statistic.visitor_statistics.create(ip: request.remote_ip, browser: Browser.new(request.user_agent).name, location: request.location.country)
     respond_to do |format|
-      UserMailer.with(ebook: @ebook).sale_commission.deliver_now
-      UserMailer.with(ebook: @ebook).ebook_statistics.deliver_now
+      UserMailer.with(ebook: @ebook).sale_commission.deliver_later
+      UserMailer.with(ebook: @ebook).ebook_statistics.deliver_later
       format.html { redirect_to ebooks_path, notice: "Ebook was successfully purchased." }
     end
   end

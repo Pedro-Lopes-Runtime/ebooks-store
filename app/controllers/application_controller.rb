@@ -18,8 +18,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      debugger
-      User.find_by(id: session[:current_user_id]) if session[:current_user_id]
+      @current_user = User.find_by(id: session[:current_user_id]) if session[:current_user_id]
     end
 
     def request_sign_in
@@ -27,8 +26,19 @@ class ApplicationController < ActionController::Base
       redirect_to sign_in_path
     end
 
+    def request_password_reset
+      return true if [ expired_password_path, update_expired_password_path ].include? request.path
+
+      session[:previous_url] = request.url
+      redirect_to expired_password_path
+    end
+
+    def has_valid_password
+      !@current_user.expired_password? || request_password_reset
+    end
+
     def require_authentication
-      current_user || request_sign_in
+      (current_user && has_valid_password) || request_sign_in
     end
 
     def after_sign_in_url

@@ -11,4 +11,9 @@ class UserMailer < ApplicationMailer
     @statistics = @ebook.ebook_statistic
     mail(to: seller.user.email, subjet: "Ebook Statistics")
   end
+
+  def welcome
+    @user = params[:user]
+    mail(to: @user.email, subjet: "Ebook Statistics")
+  end
 end
