@@ -17,11 +17,11 @@
     <strong><%= f.label :password_confirmation%></strong><br/>
     <%= f.password_field :password_confirmation%>
   </p>
-  <% if action_name == "new" %>
+  <% if ["new", "create"].include? action_name %>
       <%= f.hidden_field :status, value: true %>
       <p>
-        <strong><%= f.label :profileable_type%></strong><br/>
-        <%= f.select :profileable_type, ['Seller', 'Buyer']%>
+        <strong><%= f.label :user_type%></strong><br/>
+        <%= f.select :user_type, User.user_types.keys %>
       </p>
   <% end %>
 

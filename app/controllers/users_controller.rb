@@ -15,17 +15,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    if params[:user][:profileable_type] == "Buyer"
-      user_type = Buyer.create
-    else
-      user_type = Seller.create
-    end
-    @user = User.new(params.require(:user).permit(:username, :email, :status, :password, :password_confirmation).merge(profileable: user_type).each_value { |v| v.strip! if v.is_a? String })
+    @user = User.new(params.require(:user).permit(:username, :email, :status, :password, :password_confirmation, :user_type).each_value { |v| v.strip! if v.is_a? String })
     if @user.save
       UserMailer.with(user: @user).welcome.deliver_later
       redirect_to sign_in_path
     else
-      user_type.destroy
       render "new", status: 422
     end
   end

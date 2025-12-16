@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  belongs_to :profileable, polymorphic: true
+  enum :user_type, { Seller: 0, Buyer: 1 }, validate: true
+  has_many :ebooks
   has_one_attached :profile_image
   has_secure_password
   validates :username, presence: true,
