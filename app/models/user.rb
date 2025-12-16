@@ -37,4 +37,12 @@ class User < ApplicationRecord
   def expired_password?
     self.password_updated_at <= 6.months.ago
   end
+
+  def name
+    self.displayname || self.username
+  end
+
+  def self.find_by_username_or_email(query)
+    self.where("email = :query OR username = :query", query: query).first
+  end
 end
