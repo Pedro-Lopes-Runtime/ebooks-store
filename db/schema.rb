@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_11_125320) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_15_154104) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -86,6 +86,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_125320) do
     t.index ["seller_id"], name: "index_ebooks_on_seller_id"
   end
 
+  create_table "ebooks_tags", id: false, force: :cascade do |t|
+    t.integer "ebook_id"
+    t.integer "tag_id"
+    t.index ["ebook_id"], name: "index_ebooks_tags_on_ebook_id"
+    t.index ["tag_id"], name: "index_ebooks_tags_on_tag_id"
+  end
+
   create_table "purchases", force: :cascade do |t|
     t.integer "buyer_id"
     t.datetime "created_at", null: false
@@ -97,6 +104,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_125320) do
   end
 
   create_table "sellers", force: :cascade do |t|
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
