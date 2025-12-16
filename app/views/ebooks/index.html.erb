@@ -1,5 +1,25 @@
 <h1>Listing all Ebooks</h1>
 
+<%= form_tag ebooks_path, method: :get %>
+  <p>
+    <strong><%= label_tag "Pesquisa" %></strong><br/>
+    <%= text_field_tag :query, params[:query] || "" %>
+  </p>
+  <p>
+    <strong><%= label_tag :tag %></strong><br/>
+    <%= select_tag :tag, options_from_collection_for_select(Tag.all, :id, :name, params[:tag]), include_blank: true %>
+  </p>
+  <p>
+    <strong><%= label_tag :seller %></strong><br/>
+    <%= select_tag :seller, options_for_select(@sellers, params[:seller]), include_blank: true %>
+  </p>
+  <p>
+    <strong><%= label_tag :author %></strong><br/>
+    <%= select_tag :author, options_from_collection_for_select(Author.all, :id, :name, params[:author]), include_blank: true %>
+  </p>
+
+  <p><%= submit_tag "Procurar"%></p>
+
 <div>
 	<table class="table">
 		<thead>
@@ -29,6 +49,8 @@
 			<% end %>
 		</tbody>
 	</table>
+
+	<%= will_paginate @ebooks %>
 
 	<p><%= link_to 'Create Ebook', new_ebook_path %></p>
 </div>

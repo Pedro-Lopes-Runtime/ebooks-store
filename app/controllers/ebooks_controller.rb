@@ -2,7 +2,26 @@ class EbooksController < ApplicationController
   before_action :set_ebook, only: [ :show, :edit, :update, :destroy, :update_status, :preview, :purchase ]
 
   def index
+    @sellers = Seller.all.reject { |user| user.ebooks.blank? }.map(&:user).map { |user| [ user.name, user.id ] }
+    query, filters = get_query_and_filters
     @ebooks = Ebook.all
+
+    if filters.present?
+      filters.each do |key, value|
+        if key == :tag
+          @ebooks = Tag.find_by(id: value).ebooks.merge(@ebooks)
+        else
+          @ebooks = @ebooks.where(key => value)
+        end
+        break if @ebooks.blank?
+      end
+    end
+
+    if @ebooks.present? && query.present?
+      @ebooks = @ebooks.where("title like :query OR description like :query", query: "%#{query}%")
+    end
+
+    @ebooks = @ebooks.paginate(page: params[:page] || 1, per_page: 10)
   end
 
   def show
@@ -17,6 +36,7 @@ class EbooksController < ApplicationController
 
   def create
     @ebook = Ebook.new(ebook_params)
+    @ebook.tags = Tag.where(id: params[:ebook][:tags])
     if @ebook.save
       @statistics = EbookStatistic.create(ebook: @ebook)
       redirect_to @ebook
@@ -29,6 +49,7 @@ class EbooksController < ApplicationController
   end
 
   def update
+    @ebook.tags = Tag.where(id: params[:ebook][:tags])
     if @ebook.update(ebook_params)
       redirect_to @ebook
     else
@@ -91,5 +112,17 @@ class EbooksController < ApplicationController
 
   def ebook_params
     params.require(:ebook).permit(:title, :description, :author_id, :ebook_status_id, :preview, :seller_id, :price, :cover)
+  end
+
+  def get_query_and_filters
+    filters = {}
+    filters[:tag] = params["tag"] if params["tag"].present?
+    filters[:seller_id] = params["seller"] if params["seller"].present?
+    filters[:author_id] = params["author"] if params["author"].present?
+
+    query = ""
+    query = params["query"] if params["query"].present?
+
+    [ query, filters ]
   end
 end
