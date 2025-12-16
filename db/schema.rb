@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_15_154104) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_16_152223) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -45,17 +45,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_15_154104) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "buyers", force: :cascade do |t|
-  end
-
-  create_table "ebook_purchases", force: :cascade do |t|
-    t.integer "ebook_id"
-    t.float "price"
-    t.integer "purchase_id"
-    t.index ["ebook_id"], name: "index_ebook_purchases_on_ebook_id"
-    t.index ["purchase_id"], name: "index_ebook_purchases_on_purchase_id"
-  end
-
   create_table "ebook_statistics", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "ebook_id"
@@ -66,24 +55,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_15_154104) do
     t.index ["ebook_id"], name: "index_ebook_statistics_on_ebook_id"
   end
 
-  create_table "ebook_statuses", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "name"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "ebooks", force: :cascade do |t|
     t.integer "author_id"
     t.datetime "created_at", null: false
     t.text "description"
-    t.integer "ebook_status_id"
     t.float "price"
-    t.integer "seller_id"
+    t.integer "status", default: 0, null: false
     t.string "title"
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["author_id"], name: "index_ebooks_on_author_id"
-    t.index ["ebook_status_id"], name: "index_ebooks_on_ebook_status_id"
-    t.index ["seller_id"], name: "index_ebooks_on_seller_id"
+    t.index ["user_id"], name: "index_ebooks_on_user_id"
   end
 
   create_table "ebooks_tags", id: false, force: :cascade do |t|
@@ -94,16 +76,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_15_154104) do
   end
 
   create_table "purchases", force: :cascade do |t|
-    t.integer "buyer_id"
     t.datetime "created_at", null: false
     t.integer "ebook_id"
     t.float "price", default: 0.0
     t.datetime "updated_at", null: false
-    t.index ["buyer_id"], name: "index_purchases_on_buyer_id"
+    t.integer "user_id"
     t.index ["ebook_id"], name: "index_purchases_on_ebook_id"
-  end
-
-  create_table "sellers", force: :cascade do |t|
+    t.index ["user_id"], name: "index_purchases_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -117,14 +96,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_15_154104) do
     t.datetime "created_at", null: false
     t.string "displayname"
     t.string "email"
-    t.string "password_digest"
-    t.datetime "password_updated_at", default: "2025-12-12 18:28:43", null: false
-    t.integer "profileable_id"
-    t.string "profileable_type"
+    t.string "password_digest", null: false
+    t.datetime "password_updated_at", default: "2025-12-16 17:01:01", null: false
     t.boolean "status"
     t.datetime "updated_at", null: false
+    t.integer "user_type", default: 0, null: false
     t.string "username"
-    t.index ["profileable_type", "profileable_id"], name: "index_users_on_profileable"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   create_table "visitor_statistics", force: :cascade do |t|

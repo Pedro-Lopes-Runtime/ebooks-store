@@ -29,12 +29,12 @@
     <%= f.number_field :price, step: "0.01"%>
   </p>
   <p>
-    <strong><%= f.label :seller%></strong><br/>
-    <%= f.select :seller_id, Seller.all.map(&:user).map{ |user| [user.name, user.id] } %>
+    <strong><%= f.label :user%></strong><br/>
+    <%= f.select :user_id, User.Seller.map{ |user| [user.name, user.id] } %>
   </p>
   <p>
     <strong><%= f.label :status%></strong><br/>
-    <%= f.select :ebook_status_id, EbookStatus.all.pluck(:name, :id)%>
+    <%= f.select :status, Ebook.statuses.keys %>
   </p>
   <p>
     <strong><%= f.label :preview%></strong><br/>

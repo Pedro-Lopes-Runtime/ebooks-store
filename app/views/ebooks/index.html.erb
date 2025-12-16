@@ -10,8 +10,8 @@
     <%= select_tag :tag, options_from_collection_for_select(Tag.all, :id, :name, params[:tag]), include_blank: true %>
   </p>
   <p>
-    <strong><%= label_tag :seller %></strong><br/>
-    <%= select_tag :seller, options_for_select(@sellers, params[:seller]), include_blank: true %>
+    <strong><%= label_tag :user %></strong><br/>
+    <%= select_tag :user, options_for_select(@sellers, params[:user]), include_blank: true %>
   </p>
   <p>
     <strong><%= label_tag :author %></strong><br/>
@@ -37,8 +37,8 @@
 				<td><%= link_to ebook.title, ebook %></td>
 				<td><%= ebook.description %></td>
 				<td><%= link_to ebook.author.name, author_path(ebook.author.id) %></td>
-				<td><%= ebook.ebook_status.name %></td>
-				<% if ebook.ebook_status.name != 'Live' %>
+				<td><%= ebook.status %></td>
+				<% if ebook.status != 'Live' %>
 					<td><%= link_to 'Advance status', update_status_ebook_path(ebook.id),
 									data: {turbo_method: :post } %></td>
 				<% end %>

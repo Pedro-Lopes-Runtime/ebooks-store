@@ -7,11 +7,11 @@ class SessionsController < ApplicationController
 
   def create
     if user = User.authenticate_by(params.permit(:email, :password))
+      return redirect_to sign_in_path, alert: "This account has been disabled." unless user.status
       new_session user
       redirect_to after_sign_in_url
     else
-      flash[:alert] = "Try another email address or password."
-      redirect_to sign_in_path
+      redirect_to sign_in_path, alert: "Try another email address or password."
     end
   end
 

@@ -8,11 +8,6 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-[ "Draft", "Pending", "Live" ].each do |status|
-  EbookStatus.find_or_create_by!(name: status)
-end
-
-
 [ "Adventure", "Classics", "Crime", "Fantasy", "Historical", "Horror", "Humour",
   "Mystery", "Poetry", "Plays", "Romance", "Science fiction", "Short stories", "Thrillers", "War" ].each do |tag|
     Tag.find_or_create_by(name: tag)

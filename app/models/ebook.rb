@@ -1,7 +1,7 @@
 class Ebook < ApplicationRecord
+  enum :status, { Draft: 0, Pending: 1, Live: 2 }, validate: true
   belongs_to :author
-  belongs_to :ebook_status
-  belongs_to :seller
+  belongs_to :user
   has_one :ebook_statistic
   has_one_attached :preview
   has_one_attached :cover
