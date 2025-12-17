@@ -2,7 +2,7 @@ class EbooksController < ApplicationController
   before_action :set_ebook, only: [ :show, :edit, :update, :destroy, :update_status, :preview, :purchase ]
 
   def index
-    @sellers = User.Seller.reject { |user| user.ebooks.blank? }.map { |user| [ user.name, user.id ] }
+    @sellers = User.seller.reject { |user| user.ebooks.blank? }.map { |user| [ user.name, user.id ] }
     query, filters = get_query_and_filters
     @ebooks = Ebook.all
 

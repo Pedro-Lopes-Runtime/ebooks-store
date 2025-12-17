@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  enum :user_type, { Seller: 0, Buyer: 1 }, validate: true
+  enum :user_type, { seller: 0, buyer: 1 }, validate: true
   has_many :ebooks
   has_one_attached :profile_image
   has_secure_password
