@@ -40,8 +40,7 @@ class UsersController < ApplicationController
   end
 
   def update_status
-    @user.status = !@user.status
-    @user.save
+    @user.change_status
     redirect_back_or_to "/"
   end
 

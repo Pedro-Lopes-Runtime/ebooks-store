@@ -46,4 +46,9 @@ class User < ApplicationRecord
   def self.find_by_username_or_email(query)
     self.where("email = :query OR username = :query", query: query).first
   end
+
+  def change_status
+    self.status = !self.status
+    save
+  end
 end
