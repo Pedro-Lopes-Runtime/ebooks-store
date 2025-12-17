@@ -15,7 +15,6 @@ class User < ApplicationRecord
 
   before_create :set_password_updated_at
   before_save :update_password_updated_at, if: :will_save_change_to_password_digest?
-  before_update :update_password_updated_at, if: :will_save_change_to_password_digest?
 
   def set_password_updated_at
     self.password_updated_at = self.updated_at
