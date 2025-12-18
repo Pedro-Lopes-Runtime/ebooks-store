@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  after(:all) do
-    User.destroy_all
-  end
-
   let(:generate_valid_user) { User.new(username: "test_username", email: "test.email@email.com", password: "1234") }
 
   context "Test user instantiate" do
@@ -40,11 +36,11 @@ RSpec.describe User, type: :model do
     it "should enable/disable status" do
       user = generate_valid_user
       user.save
-      expect(user.status).to be_truthy
+      expect(user.status).to eq "enabled"
       user.change_status
-      expect(user.status).to be_falsy
+      expect(user.status).to eq "disabled"
       user.change_status
-      expect(user.status).to be_truthy
+      expect(user.status).to eq "enabled"
     end
   end
 
@@ -78,6 +74,45 @@ RSpec.describe User, type: :model do
       expect(user).to_not be_valid
       user.email = "@email.com"
       expect(user).to_not be_valid
+    end
+  end
+
+  context "Test association" do
+    it { should have_many(:ebooks).dependent(:destroy) }
+    it { should have_many(:purchases).dependent(:destroy) }
+    it { should have_many(:purchased_ebooks).through(:purchases) }
+  end
+
+  context "Test instance methods" do
+    it ".enable! should set status to enabled" do
+      user = User.new(username: "test_username", email: "test.email@email.com", password: "1234", status: false)
+      expect(user.status).to eq "disabled"
+      user.enable!
+      expect(user.status).to eq "enabled"
+    end
+
+    it ".disable! should set status to disabled" do
+      user = User.new(username: "test_username", email: "test.email@email.com", password: "1234", status: true)
+      expect(user.status).to eq "enabled"
+      user.disable!
+      expect(user.status).to eq "disabled"
+    end
+
+    it ".enabled? should return true or false" do
+      user = User.new(username: "test_username", email: "test.email@email.com", password: "1234", status: true)
+      expect(user.enabled?).to be_truthy
+      user.disable!
+      expect(user.enabled?).to be_falsy
+    end
+  end
+
+  context "Test callbacks" do
+    it "normailizes email" do
+      non_normalized_email = "NoN.NoRmAlIzEd@EMAIL.com"
+      user = User.new(username: "test_username", email: non_normalized_email, password: "1234")
+      expect(user.email).to eq(non_normalized_email)
+      user.save
+      expect(user.email).to eq(non_normalized_email.downcase)
     end
   end
 end

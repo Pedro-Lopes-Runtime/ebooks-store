@@ -75,26 +75,21 @@ class EbooksController < ApplicationController
   end
 
   def purchase
+    Thread.current[:request] = { ip: request.remote_ip, browser: Browser.new(request.user_agent).name, location: request.location.country }
     begin
       ActiveRecord::Base.transaction do
         raise ActiveRecord::Rollback if @current_user.balance < @ebook.price
 
-        Purchase.create(uesr: @current_user, ebook: @ebook, price: @ebook.price)
-        @ebook.ebook_statistic.update_purchases
+        Purchase.create(user: @current_user, ebook: @ebook, price: @ebook.price)
         @ebook.user.deposit(@ebook.price/10)
-        @current_user.user.pay(@ebook.price)
+        @current_user.pay(@ebook.price)
       end
     rescue
       flash[:alert] = "An error occurred and the purchase could not be completed. Please try again later"
       return redirect_back_or_to "/"
     end
 
-    @ebook.ebook_statistic.visitor_statistics.create(ip: request.remote_ip, browser: Browser.new(request.user_agent).name, location: request.location.country)
-    respond_to do |format|
-      UserMailer.with(ebook: @ebook).sale_commission.deliver_later
-      UserMailer.with(ebook: @ebook).ebook_statistics.deliver_later
-      format.html { redirect_to ebooks_path, notice: "Ebook was successfully purchased." }
-    end
+    redirect_to ebooks_path, notice: "Ebook was successfully purchased."
   end
 
   private
