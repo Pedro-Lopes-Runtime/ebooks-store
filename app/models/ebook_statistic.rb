@@ -12,7 +12,6 @@ class EbookStatistic < ApplicationRecord
   end
 
   def update_purchases
-    raise
     self.purchases += 1
   end
 end
