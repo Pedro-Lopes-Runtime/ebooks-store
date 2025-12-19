@@ -12,10 +12,16 @@ class Ebook < ApplicationRecord
   validates :description, presence: true, length: { minimum: 10, maximum: 300 }
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
+  after_create :initialize_statistics
+
   scope :published, -> { where(status: "live") }
   scope :draft, -> { where(status: "draft") }
   scope :pending, -> { where(status: "pending") }
   scope :by_seller, ->(seller) { where(user: seller) }
+
+  def initialize_statistics
+    create_ebook_statistic!
+  end
 
   def submit_for_review!
     self.status = "pending" if self.status == "draft"

@@ -4,7 +4,7 @@ class EbooksController < ApplicationController
   def index
     @sellers = User.seller.reject { |user| user.ebooks.blank? }.map { |user| [ user.name, user.id ] }
     query, filters = get_query_and_filters
-    @ebooks = Ebook.all
+    @ebooks = Ebook.published
 
     if filters.present?
       filters.each do |key, value|
@@ -25,9 +25,7 @@ class EbooksController < ApplicationController
   end
 
   def show
-    stats = @ebook.ebook_statistic
-    stats.visits += 1
-    stats.save
+    @ebook.ebook_statistic.update_visits
   end
 
   def new
@@ -68,9 +66,7 @@ class EbooksController < ApplicationController
   end
 
   def preview
-    stats = @ebook.ebook_statistic
-    stats.preview_views += 1
-    stats.save
+    @ebook.ebook_statistic.update_preview_views
     redirect_to rails_blob_path(@ebook.preview, dispostion: "preview")
   end
 
