@@ -9,9 +9,11 @@ class EbookStatistic < ApplicationRecord
 
   def update_preview_views
     self.preview_views += 1
+    save
   end
 
   def update_purchases
     self.purchases += 1
+    save
   end
 end
