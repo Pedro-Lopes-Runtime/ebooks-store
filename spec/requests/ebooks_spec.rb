@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe "Ebooks", type: :request do
+  def stub_auth_for(ebook)
+    allow_any_instance_of(ApplicationController).to receive(:require_authentication).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:current_user) do |controller|
+      controller.instance_variable_set(:@current_user, ebook.user)
+      ebook.user
+    end
+  end
+
   let(:generate_ebook) do
     author = Author.create!(name: "Test Author")
     seller = User.create!(username: "seller_user", email: "seller@example.com", password: "1234")
@@ -9,17 +17,13 @@ RSpec.describe "Ebooks", type: :request do
                   author: author, user: seller, price: 9.99, status: "live")
   end
 
-  let(:authenticate_user) do
-    post create_session_path, params: { email: "seller@example.com", password: "1234" }
-  end
-
   describe "GET /index" do
     it "list published ebooks" do
       ebook = generate_ebook
 
-      allow(Ebook).to receive(:published).and_return(Ebook.where(id: ebook.id))
+      stub_auth_for(ebook)
 
-      authenticate_user
+      allow(Ebook).to receive(:published).and_return(Ebook.where(id: ebook.id))
 
       get ebooks_path
 
@@ -30,7 +34,8 @@ RSpec.describe "Ebooks", type: :request do
   describe "GET /show" do
     it "records view" do
       ebook = generate_ebook
-      authenticate_user
+
+      stub_auth_for(ebook)
 
       allow(Ebook).to receive(:find).and_return(ebook)
 
@@ -53,7 +58,7 @@ RSpec.describe "Ebooks", type: :request do
       )
       ebook.save!
 
-      authenticate_user
+      stub_auth_for(ebook)
 
       allow(Ebook).to receive(:find).and_return(ebook)
 
@@ -71,7 +76,7 @@ RSpec.describe "Ebooks", type: :request do
 
       ebook.user.update!(balance: 100)
 
-      authenticate_user
+      stub_auth_for(ebook)
 
       allow(Ebook).to receive(:find).and_return(ebook)
       allow(Purchase).to receive(:create).and_raise(StandardError.new("Purchase failed"))
@@ -87,7 +92,7 @@ RSpec.describe "Ebooks", type: :request do
 
       ebook.user.update!(balance: 100)
 
-      authenticate_user
+      stub_auth_for(ebook)
 
       failing_mail = double("Mail")
       allow(failing_mail).to receive(:deliver_later).and_raise(StandardError.new("Email failed"))
