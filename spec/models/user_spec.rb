@@ -1,33 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  subject { create(:user) }
+  it_behaves_like "a model with status"
+
   context "Test user instantiate" do
     it "is valid with valid attributes" do
       expect(build_stubbed(:user)).to be_valid
     end
 
-    it "is invalid with no username" do
-      user = build_stubbed(:user, username: nil)
-      expect(user).to_not be_valid
-      expect(user.errors.full_messages).to include "Username can't be blank"
-    end
-
-    it "is invalid with no email" do
-      user = build_stubbed(:user, email: nil)
-      expect(user).to_not be_valid
-      expect(user.errors.full_messages).to include "Email can't be blank"
-    end
-    it "is invalid with no password" do
-      user = build_stubbed(:user, password: nil)
-      expect(user).to_not be_valid
-      expect(user.errors.full_messages).to include "Password can't be blank"
-    end
+    it_behaves_like "validates presence of", :username
+    it_behaves_like "validates presence of", :email
+    it_behaves_like "validates presence of", :password
   end
 
   context "Test enum attributes" do
-    it "should have valid user_types" do
-      expect(User.user_types.keys).to match_array %w[seller buyer]
-    end
+    it_behaves_like "validates enum", :user_type, %w[seller buyer]
   end
 
   context "Test functionality" do
@@ -42,21 +30,8 @@ RSpec.describe User, type: :model do
   end
 
   context "Test attribute uniqueness" do
-    it "is invalid if email is already being used" do
-      user1 = create(:user)
-      user2 = build(:user, email: user1.email)
-
-      expect(user2).to_not be_valid
-      expect(user2.errors.full_messages).to include "Email has already been taken"
-    end
-
-    it "is invalid if username is already being used" do
-      user1 = create(:user)
-      user2 = build(:user, username: user1.username)
-
-      expect(user2).to_not be_valid
-      expect(user2.errors.full_messages).to include "Username has already been taken"
-    end
+    it_behaves_like "validates uniqueness of", :email
+    it_behaves_like "validates uniqueness of", :username
   end
 
   context "Test format validation" do

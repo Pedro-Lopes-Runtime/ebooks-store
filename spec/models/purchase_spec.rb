@@ -1,7 +1,7 @@
 require 'rails_helper'
 include ActiveJob::TestHelper
 
-RSpec.describe Purchase, type: :model do
+RSpec.describe Purchase, :with_ebook, type: :model do
   context "Test association" do
     it { should belong_to(:user) }
     it { should belong_to(:ebook) }
@@ -10,8 +10,6 @@ RSpec.describe Purchase, type: :model do
 
   context "when purchased is created" do
     it "should trigger notifications" do
-      ebook = create(:ebook)
-
       mail_double = double(deliver_later: true)
 
       allow(UserMailer).to receive(:with).with(ebook: ebook).and_return(UserMailer)
@@ -27,13 +25,10 @@ RSpec.describe Purchase, type: :model do
     end
 
     it "should update ebook statistics" do
-      ebook = create(:ebook)
-
       expect { create(:purchase, ebook: ebook) }.to change { ebook.ebook_statistic.purchases }.by 1
     end
 
     it "should record correct price" do
-      ebook = create(:ebook)
       purchase = create(:purchase, ebook: ebook, price: ebook.price)
 
       expect(purchase.price).to eq(ebook.price)
@@ -42,8 +37,6 @@ RSpec.describe Purchase, type: :model do
     end
 
     it "creates visitor_statistics with the correct data" do
-      ebook = create(:ebook)
-
       request_data = { ip: "123.123.123.123", browser: "Chrome", location: "Portugal" }
 
       purchase = build(:purchase, ebook: ebook)

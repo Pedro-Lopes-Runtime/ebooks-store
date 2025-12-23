@@ -2,34 +2,24 @@ require 'rails_helper'
 
 
 RSpec.describe Ebook, type: :model do
+  subject { create(:ebook) }
+  it_behaves_like "a model with status"
+
+  subject { create(:ebook, :draft) }
+  it_behaves_like "a publishable resource"
+
   context "Instantiate Ebook" do
     it "is valid with valid attributes" do
       expect(build_stubbed(:ebook)).to be_valid
     end
 
-    it "is invalid with no title" do
-      ebook = build_stubbed(:ebook, title: nil)
-      expect(ebook).to_not be_valid
-      expect(ebook.errors.full_messages).to include "Title can't be blank"
-    end
-
-    it "is invalid with no description" do
-      ebook = build_stubbed(:ebook, description: nil)
-      expect(ebook).to_not be_valid
-      expect(ebook.errors.full_messages).to include "Description can't be blank"
-    end
-
-    it "is invalid with no price" do
-      ebook = build_stubbed(:ebook, price: nil)
-      expect(ebook).to_not be_valid
-      expect(ebook.errors.full_messages).to include "Price can't be blank"
-    end
+    it_behaves_like "validates presence of", :title
+    it_behaves_like "validates presence of", :description
+    it_behaves_like "validates presence of", :price
   end
 
   context "Test enum attributes" do
-    it "should have valid statuses" do
-      expect(Ebook.statuses.keys).to match_array %w[draft pending live]
-    end
+    it_behaves_like "validates enum", :status, %w[draft pending live]
 
     it "should have valid status" do
       ebook = build_stubbed(:ebook)
@@ -61,42 +51,15 @@ RSpec.describe Ebook, type: :model do
   end
 
   context ".draft" do
-    it "returns only draft ebooks" do
-      draft_ebook = create(:ebook, :draft)
-      pending_ebook = create(:ebook, :pending)
-      live_ebook = create(:ebook, :live)
-
-      draft_ebooks = Ebook.draft
-      expect(draft_ebooks).to include(draft_ebook)
-      expect(draft_ebooks).to_not include(pending_ebook)
-      expect(draft_ebooks).to_not include(live_ebook)
-    end
+    it_behaves_like "filters by status scope", :draft, :draft
   end
 
   context ".pending" do
-    it "returns only pending ebooks" do
-      draft_ebook = create(:ebook, :draft)
-      pending_ebook = create(:ebook, :pending)
-      live_ebook = create(:ebook, :live)
-
-      published_ebooks = Ebook.pending
-      expect(published_ebooks).to_not include(draft_ebook)
-      expect(published_ebooks).to include(pending_ebook)
-      expect(published_ebooks).to_not include(live_ebook)
-    end
+    it_behaves_like "filters by status scope", :pending, :pending
   end
 
   context ".published" do
-    it "returns only live ebooks" do
-      draft_ebook = create(:ebook, :draft)
-      pending_ebook = create(:ebook, :pending)
-      live_ebook = create(:ebook, :live)
-
-      published_ebooks = Ebook.published
-      expect(published_ebooks).to_not include(draft_ebook)
-      expect(published_ebooks).to_not include(pending_ebook)
-      expect(published_ebooks).to include(live_ebook)
-    end
+    it_behaves_like "filters by status scope", :published, :live
   end
 
   context ".by_seller" do
