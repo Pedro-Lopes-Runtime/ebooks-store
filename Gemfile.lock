@@ -450,6 +450,7 @@ DEPENDENCIES
   rails (~> 8.1.1)
   rails-controller-testing
   rspec-rails
+  rubocop
   rubocop-rails-omakase
   ruby-vips (~> 2.3)
   selenium-webdriver
