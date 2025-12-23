@@ -2,37 +2,25 @@ require 'rails_helper'
 
 
 RSpec.describe Ebook, type: :model do
-  before(:all) do
-    @user = User.create(username: "testing_user", email: "test.email@email.com", password: "1234")
-    @author = Author.create(name: "test author")
-  end
-
-  after(:all) do
-    @user.destroy
-    @author.destroy
-  end
-
-  let(:generate_valid_ebook) { Ebook.new(author: @author, user: @user, title: "test title", description: "test description", price: 29.99) }
-
   context "Instantiate Ebook" do
     it "is valid with valid attributes" do
-      expect(generate_valid_ebook).to be_valid
+      expect(build_stubbed(:ebook)).to be_valid
     end
 
     it "is invalid with no title" do
-      ebook = Ebook.new(author: @author, user: @user, description: "test description", price: 29.99)
+      ebook = build_stubbed(:ebook, title: nil)
       expect(ebook).to_not be_valid
       expect(ebook.errors.full_messages).to include "Title can't be blank"
     end
 
     it "is invalid with no description" do
-      ebook = Ebook.new(author: @author, user: @user, title: "test title", price: 29.99)
+      ebook = build_stubbed(:ebook, description: nil)
       expect(ebook).to_not be_valid
       expect(ebook.errors.full_messages).to include "Description can't be blank"
     end
 
     it "is invalid with no price" do
-      ebook = Ebook.new(author: @author, user: @user, description: "test description", title: "test title")
+      ebook = build_stubbed(:ebook, price: nil)
       expect(ebook).to_not be_valid
       expect(ebook.errors.full_messages).to include "Price can't be blank"
     end
@@ -44,7 +32,7 @@ RSpec.describe Ebook, type: :model do
     end
 
     it "should have valid status" do
-      ebook = generate_valid_ebook
+      ebook = build_stubbed(:ebook)
       expect(ebook).to be_valid
       ebook.status = "pending"
       expect(ebook).to be_valid
@@ -57,12 +45,12 @@ RSpec.describe Ebook, type: :model do
 
   context "Test numericality validation" do
     it "should have price greater or equal to 0" do
-      ebook = generate_valid_ebook
-      expect(generate_valid_ebook).to be_valid
+      ebook = build_stubbed(:ebook)
+      expect(ebook).to be_valid
       ebook.price = 0
-      expect(generate_valid_ebook).to be_valid
+      expect(ebook).to be_valid
       ebook.price = -10
-      expect(generate_valid_ebook).to_not be_valid
+      expect(ebook).to_not be_valid
     end
   end
 
@@ -74,22 +62,22 @@ RSpec.describe Ebook, type: :model do
 
   context ".draft" do
     it "returns only draft ebooks" do
-      draft_ebook = Ebook.create(title: "Draft Ebook", author: @author, user: @user, description: "test description", price: 29.99)
-      pending_ebook = Ebook.create(title: "Live Ebook", status: "pending", author: @author, user: @user, description: "test description", price: 29.99)
-      live_ebook = Ebook.create(title: "Live Ebook", status: "live", author: @author, user: @user, description: "test description", price: 29.99)
+      draft_ebook = create(:ebook, :draft)
+      pending_ebook = create(:ebook, :pending)
+      live_ebook = create(:ebook, :live)
 
-      published_ebooks = Ebook.draft
-      expect(published_ebooks).to include(draft_ebook)
-      expect(published_ebooks).to_not include(pending_ebook)
-      expect(published_ebooks).to_not include(live_ebook)
+      draft_ebooks = Ebook.draft
+      expect(draft_ebooks).to include(draft_ebook)
+      expect(draft_ebooks).to_not include(pending_ebook)
+      expect(draft_ebooks).to_not include(live_ebook)
     end
   end
 
   context ".pending" do
     it "returns only pending ebooks" do
-      draft_ebook = Ebook.create(title: "Draft Ebook", author: @author, user: @user, description: "test description", price: 29.99)
-      pending_ebook = Ebook.create(title: "Live Ebook", status: "pending", author: @author, user: @user, description: "test description", price: 29.99)
-      live_ebook = Ebook.create(title: "Live Ebook", status: "live", author: @author, user: @user, description: "test description", price: 29.99)
+      draft_ebook = create(:ebook, :draft)
+      pending_ebook = create(:ebook, :pending)
+      live_ebook = create(:ebook, :live)
 
       published_ebooks = Ebook.pending
       expect(published_ebooks).to_not include(draft_ebook)
@@ -100,9 +88,9 @@ RSpec.describe Ebook, type: :model do
 
   context ".published" do
     it "returns only live ebooks" do
-      draft_ebook = Ebook.create(title: "Draft Ebook", author: @author, user: @user, description: "test description", price: 29.99)
-      pending_ebook = Ebook.create(title: "Live Ebook", status: "pending", author: @author, user: @user, description: "test description", price: 29.99)
-      live_ebook = Ebook.create(title: "Live Ebook", status: "live", author: @author, user: @user, description: "test description", price: 29.99)
+      draft_ebook = create(:ebook, :draft)
+      pending_ebook = create(:ebook, :pending)
+      live_ebook = create(:ebook, :live)
 
       published_ebooks = Ebook.published
       expect(published_ebooks).to_not include(draft_ebook)
@@ -113,11 +101,10 @@ RSpec.describe Ebook, type: :model do
 
   context ".by_seller" do
     it "returns only ebooks from the seller" do
-      user_ebook = Ebook.create(title: "User Ebook", author: @author, user: @user, description: "test description", price: 29.99)
-      seller2 = User.create(username: "seller2_username", email: "seller2.email@email.com", password: "1234")
-      seller2_ebook = Ebook.create(title: "Seller2 Ebook", author: @author, user: seller2, description: "test description", price: 29.99)
+      user_ebook = create(:ebook)
+      seller2_ebook = create(:ebook)
 
-      user_ebooks = Ebook.by_seller(@user)
+      user_ebooks = Ebook.by_seller(user_ebook.user)
       expect(user_ebooks).to include(user_ebook)
       expect(user_ebooks).to_not include(seller2_ebook)
     end
@@ -125,57 +112,47 @@ RSpec.describe Ebook, type: :model do
 
   context "published.by_seller" do
     it "returns only live ebooks from the seller" do
-      draft_user_ebook = Ebook.create(title: "User Ebook 1", author: @author, user: @user, description: "test description", price: 29.99)
-      live_user_ebook = Ebook.create(title: "User Ebook 1", status: "live", author: @author, user: @user, description: "test description", price: 29.99)
-      seller2 = User.create(username: "seller2_username", email: "seller2.email@email.com", password: "1234")
-      seller2_ebook = Ebook.create(title: "Seller2 Ebook", status: "live", author: @author, user: seller2, description: "test description", price: 29.99)
+      user = build_stubbed(:user)
+      user_draft_ebook = create(:ebook, :draft, user: user)
+      user_pending_ebook = create(:ebook, :pending, user: user)
+      user_published_ebook = create(:ebook, :published, user: user)
+      other_seller_ebook = create(:ebook, :published)
 
-      published_user_ebooks = Ebook.published.by_seller(@user)
-      expect(published_user_ebooks).to include(live_user_ebook)
-      expect(published_user_ebooks).to_not include(draft_user_ebook)
-      expect(published_user_ebooks).to_not include(seller2_ebook)
+      published_user_ebooks = Ebook.published.by_seller(user)
+      expect(published_user_ebooks).to include(user_published_ebook)
+      expect(published_user_ebooks).to_not include(user_pending_ebook)
+      expect(published_user_ebooks).to_not include(user_draft_ebook)
+      expect(published_user_ebooks).to_not include(other_seller_ebook)
     end
   end
 
   context "Test instance methods" do
     it ".publish! should change status from pending to live" do
-      draft_ebook = Ebook.create(title: "User Ebook 1", author: @author, user: @user, description: "test description", price: 29.99)
-      pending_ebook = Ebook.create(title: "User Ebook 1", author: @author, user: @user, description: "test description", price: 29.99, status: "pending")
+      draft_ebook = build_stubbed(:ebook, :draft)
+      pending_ebook = build_stubbed(:ebook, :pending)
 
-      draft_ebook.publish!
-      expect(draft_ebook.status).to_not eq "live"
-      pending_ebook.publish!
-      expect(pending_ebook.status).to eq "live"
+      expect { draft_ebook.publish! }.to_not change { draft_ebook.status }
+      expect { pending_ebook.publish! }.to change { pending_ebook.status }.to "live"
     end
 
     it ".submit_for_review! should change status from draft to pending" do
-      draft_ebook = Ebook.create(title: "User Ebook 1", author: @author, user: @user, description: "test description", price: 29.99)
-      live_ebook = Ebook.create(title: "User Ebook 1", author: @author, user: @user, description: "test description", price: 29.99, status: "live")
+      draft_ebook = build_stubbed(:ebook, :draft)
+      live_ebook = build_stubbed(:ebook, :live)
 
-      draft_ebook.submit_for_review!
-      expect(draft_ebook.status).to eq "pending"
-      live_ebook.submit_for_review!
-      expect(live_ebook.status).to_not eq "pending"
+      expect { draft_ebook.submit_for_review! }.to change { draft_ebook.status }.to "pending"
+      expect { live_ebook.submit_for_review! }.to_not change { live_ebook.status }
     end
 
     it ".view_count return ebook views" do
-      ebook = generate_valid_ebook
-      ebook.ebook_statistic = EbookStatistic.new
-      ebook.save
+      ebook = create(:ebook)
 
-      expect(ebook.view_count).to eq 0
-      ebook.ebook_statistic.visits += 1
-      expect(ebook.view_count).to eq 1
+      expect { ebook.ebook_statistic.visits += 1 }.to change { ebook.view_count }.by 1
     end
 
     it ".purchase_count return ebook purchases" do
-      ebook = generate_valid_ebook
-      ebook.ebook_statistic = EbookStatistic.new
-      ebook.save
+      ebook = create(:ebook)
 
-      expect(ebook.purchase_count).to eq 0
-      ebook.ebook_statistic.purchases += 1
-      expect(ebook.purchase_count).to eq 1
+      expect { ebook.ebook_statistic.purchases += 1 }.to change { ebook.purchase_count }.by 1
     end
   end
 end

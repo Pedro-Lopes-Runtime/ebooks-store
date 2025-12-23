@@ -9,17 +9,9 @@ RSpec.describe "Ebooks", type: :request do
     end
   end
 
-  let(:generate_ebook) do
-    author = Author.create!(name: "Test Author")
-    seller = User.create!(username: "seller_user", email: "seller@example.com", password: "1234")
-
-    Ebook.create!(title: "Test Ebook", description: "A valid description that is long enough",
-                  author: author, user: seller, price: 9.99, status: "live")
-  end
-
   describe "GET /index" do
     it "list published ebooks" do
-      ebook = generate_ebook
+      ebook = create(:ebook, :published)
 
       stub_auth_for(ebook)
 
@@ -28,12 +20,12 @@ RSpec.describe "Ebooks", type: :request do
       get ebooks_path
 
       expect(response).to have_http_status(:success)
-      expect(response.body).to include(ebook.title)
+      expect(response.body).to include(CGI.escapeHTML(ebook.title))
     end
   end
   describe "GET /show" do
     it "records view" do
-      ebook = generate_ebook
+      ebook = create(:ebook)
 
       stub_auth_for(ebook)
 
@@ -43,20 +35,14 @@ RSpec.describe "Ebooks", type: :request do
 
       get ebook_path(ebook)
 
-      expect(response.body).to include(ebook.title)
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(CGI.escapeHTML(ebook.title))
     end
   end
 
   describe "GET /preview" do
     it "redirects to the preview PDF and updates preview_views" do
-      ebook = generate_ebook
-
-      ebook.preview.attach(
-        io: StringIO.new("%PDF-1.4 fake pdf content"),
-        filename: "preview.pdf",
-        content_type: "application/pdf"
-      )
-      ebook.save!
+      ebook = create(:ebook, :with_pdf)
 
       stub_auth_for(ebook)
 
@@ -72,7 +58,7 @@ RSpec.describe "Ebooks", type: :request do
 
   describe "POST /purchase" do
     it "flashes error message and redirects back if an error is raised" do
-      ebook = generate_ebook
+      ebook = create(:ebook)
 
       ebook.user.update!(balance: 100)
 
@@ -88,7 +74,7 @@ RSpec.describe "Ebooks", type: :request do
     end
 
     it "handles email delivery failures by flashing an error and redirecting to root" do
-      ebook = generate_ebook
+      ebook = create(:ebook)
 
       ebook.user.update!(balance: 100)
 
