@@ -44,6 +44,7 @@ class EbooksController < ApplicationController
   end
 
   def edit
+    redirect_to root_path, alert: "You do not have permission to edit this ebook" if @ebook.user != current_user
   end
 
   def update
