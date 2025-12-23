@@ -5,7 +5,7 @@ on:
   push:
     branches: [ main ]
 
-# jobs:
+jobs:
 #   scan_ruby:
 #     runs-on: ubuntu-latest
 
