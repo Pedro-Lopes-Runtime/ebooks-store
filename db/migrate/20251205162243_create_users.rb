@@ -4,7 +4,7 @@ class CreateUsers < ActiveRecord::Migration[8.1]
       t.string :username
       t.string :displayname
       t.string :email
-      t.boolean :status
+      t.boolean :status, null: false, default: true
       t.belongs_to :profileable, polymorphic: true
 
       t.timestamps

@@ -30,7 +30,7 @@
   </p>
   <p>
     <strong><%= f.label :user%></strong><br/>
-    <%= f.select :user_id, User.Seller.map{ |user| [user.name, user.id] } %>
+    <%= f.select :user_id, User.seller.map{ |user| [user.name, user.id] } %>
   </p>
   <p>
     <strong><%= f.label :status%></strong><br/>

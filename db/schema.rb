@@ -97,8 +97,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_16_152223) do
     t.string "displayname"
     t.string "email"
     t.string "password_digest", null: false
-    t.datetime "password_updated_at", default: "2025-12-16 17:01:01", null: false
-    t.boolean "status"
+    t.datetime "password_updated_at", default: "2025-12-17 11:33:45", null: false
+    t.boolean "status", default: true, null: false
     t.datetime "updated_at", null: false
     t.integer "user_type", default: 0, null: false
     t.string "username"
