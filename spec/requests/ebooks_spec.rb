@@ -12,7 +12,6 @@ RSpec.describe "Ebooks", type: :request do
     end
 
     it "returns seller's ebooks", :authenticated_seller_with_ebooks do
-      debugger
       get ebooks_path
 
       expect(assigns(:ebooks).to_a).to match_array(seller_ebooks)
