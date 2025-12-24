@@ -1,12 +1,20 @@
-RSpec.shared_context "authenticated user", :authenticated do
-  let(:current_user) { create(:user) }
+RSpec.shared_context "authenticated user" do
+  let(:current_user) { create(:user, :buyer) }
 
   before do
     stub_authentication_for(current_user)
   end
 end
 
-RSpec.shared_context "authenticated seller", :authenticated_seller do
+RSpec.shared_context "authenticated seller" do
+  let(:current_user) { create(:user, :seller) }
+
+  before do
+    stub_authentication_for(current_user)
+  end
+end
+
+RSpec.shared_context "authenticated seller with ebooks" do
   let(:current_user) { create(:user, :seller) }
   let!(:seller_ebooks) { create_list(:ebook, 3, user: current_user) }
 
@@ -15,7 +23,7 @@ RSpec.shared_context "authenticated seller", :authenticated_seller do
   end
 end
 
-RSpec.shared_context "authenticated ebook owner", :authenticated_ebook_owner do
+RSpec.shared_context "authenticated ebook owner" do
   let(:ebook) { create(:ebook, :published) }
 
   before do

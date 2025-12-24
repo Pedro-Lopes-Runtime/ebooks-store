@@ -1,10 +1,10 @@
-RSpec.shared_context "with published ebooks", :with_published_ebooks do
+RSpec.shared_context "with published ebooks" do
   let(:seller) { create(:user, :seller) }
   let!(:published_ebooks) { create_list(:ebook, 5, :published, user: seller) }
   let!(:draft_ebooks) { create_list(:ebook, 2, :draft, user: seller) }
 end
 
-RSpec.shared_context "with purchase setup", :with_purchase_setup do
+RSpec.shared_context "with purchase setup" do
   let(:seller) { create(:user, :seller) }
   let(:buyer) { create(:user, :buyer, balance: 100) }
   let(:ebook) { create(:ebook, :published, user: seller, price: 29.99) }
@@ -14,6 +14,6 @@ RSpec.shared_context "with purchase setup", :with_purchase_setup do
   end
 end
 
-RSpec.shared_context "with ebook", :with_ebook do
+RSpec.shared_context "with ebook" do
   let(:ebook) { create(:ebook) }
 end
