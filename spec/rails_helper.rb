@@ -76,6 +76,7 @@ RSpec.configure do |config|
   # Automatic context inclusion based on metadata
   config.include_context "authenticated user", :authenticated
   config.include_context "authenticated seller", :authenticated_seller
+  config.include_context "authenticated seller with ebooks", :authenticated_seller_with_ebooks
   config.include_context "authenticated ebook owner", :authenticated_ebook_owner
   config.include_context "with purchase setup", :with_purchase_setup
   config.include_context "with published ebooks", :with_published_ebooks
