@@ -76,6 +76,10 @@ group :development, :test do
   gem "factory_bot_rails"
 
   gem "rubocop", require: false
+
+  gem "simplecov", require: false
+
+   gem "simplecov-json", require: false
 end
 
 group :development do
