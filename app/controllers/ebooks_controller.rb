@@ -4,7 +4,7 @@ class EbooksController < ApplicationController
   def index
     @sellers = User.seller.reject { |user| user.ebooks.blank? }.map { |user| [ user.name, user.id ] }
     query, filters = get_query_and_filters
-    @ebooks = Ebook.published
+    @ebooks = current_user.user_type == "seller" ? @current_user.ebooks : Ebook.published
 
     if filters.present?
       filters.each do |key, value|
@@ -44,6 +44,7 @@ class EbooksController < ApplicationController
   end
 
   def edit
+    redirect_to root_path, alert: "You do not have permission to edit this ebook" if @ebook.user != current_user
   end
 
   def update

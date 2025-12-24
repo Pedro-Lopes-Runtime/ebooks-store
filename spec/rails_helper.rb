@@ -9,6 +9,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # return unless Rails.env.test?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -71,6 +72,15 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+
+  # Automatic context inclusion based on metadata
+  config.include_context "authenticated user", :authenticated
+  config.include_context "authenticated seller", :authenticated_seller
+  config.include_context "authenticated seller with ebooks", :authenticated_seller_with_ebooks
+  config.include_context "authenticated ebook owner", :authenticated_ebook_owner
+  config.include_context "with purchase setup", :with_purchase_setup
+  config.include_context "with published ebooks", :with_published_ebooks
+  config.include_context "with ebook", :with_ebook
 end
 
 Shoulda::Matchers.configure do |config|

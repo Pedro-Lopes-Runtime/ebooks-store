@@ -1,34 +1,53 @@
 require 'rails_helper'
 
 RSpec.describe "Ebooks", type: :request do
-  def stub_auth_for(ebook)
-    allow_any_instance_of(ApplicationController).to receive(:require_authentication).and_return(true)
-    allow_any_instance_of(ApplicationController).to receive(:current_user) do |controller|
-      controller.instance_variable_set(:@current_user, ebook.user)
-      ebook.user
-    end
-  end
-
   describe "GET /index" do
-    it "list published ebooks" do
+    it "list published ebooks", :authenticated do
       ebook = create(:ebook, :published)
-
-      stub_auth_for(ebook)
-
-      allow(Ebook).to receive(:published).and_return(Ebook.where(id: ebook.id))
 
       get ebooks_path
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include(CGI.escapeHTML(ebook.title))
     end
+
+    it "returns seller's ebooks", :authenticated_seller_with_ebooks do
+      debugger
+      get ebooks_path
+
+      expect(assigns(:ebooks).to_a).to match_array(seller_ebooks)
+    end
   end
-  describe "GET /show" do
+
+  describe "GET #new", :authenticated do
+    it "returns success" do
+      get new_ebook_path
+
+      expect(response).to be_successful
+      expect(response).to render_template(:new)
+    end
+  end
+
+  describe "POST /create", :authenticated_seller do
+    it "returns success" do
+      expect {
+        post ebooks_path,
+          params: {
+            ebook: attributes_for(
+              :ebook,
+              user_id: current_user.id,
+              author_id: create(:author).id
+            )
+          }
+        }.to change { Ebook.count }.by 1
+
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(ebook_path(Ebook.last))
+    end
+  end
+
+  describe "GET /show", :authenticated_ebook_owner do
     it "records view" do
-      ebook = create(:ebook)
-
-      stub_auth_for(ebook)
-
       allow(Ebook).to receive(:find).and_return(ebook)
 
       expect_any_instance_of(EbookStatistic).to receive(:update_visits)
@@ -40,11 +59,9 @@ RSpec.describe "Ebooks", type: :request do
     end
   end
 
-  describe "GET /preview" do
+  describe "GET /preview", :authenticated do
     it "redirects to the preview PDF and updates preview_views" do
       ebook = create(:ebook, :with_pdf)
-
-      stub_auth_for(ebook)
 
       allow(Ebook).to receive(:find).and_return(ebook)
 
@@ -56,14 +73,8 @@ RSpec.describe "Ebooks", type: :request do
     end
   end
 
-  describe "POST /purchase" do
+  describe "POST /purchase", :with_purchase_setup do
     it "flashes error message and redirects back if an error is raised" do
-      ebook = create(:ebook)
-
-      ebook.user.update!(balance: 100)
-
-      stub_auth_for(ebook)
-
       allow(Ebook).to receive(:find).and_return(ebook)
       allow(Purchase).to receive(:create).and_raise(StandardError.new("Purchase failed"))
 
@@ -74,12 +85,6 @@ RSpec.describe "Ebooks", type: :request do
     end
 
     it "handles email delivery failures by flashing an error and redirecting to root" do
-      ebook = create(:ebook)
-
-      ebook.user.update!(balance: 100)
-
-      stub_auth_for(ebook)
-
       failing_mail = double("Mail")
       allow(failing_mail).to receive(:deliver_later).and_raise(StandardError.new("Email failed"))
 
