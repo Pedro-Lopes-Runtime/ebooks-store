@@ -1,16 +1,51 @@
 require 'rails_helper'
 
 RSpec.describe "Ebooks", type: :request do
-  describe "GET /index", :authenticated_ebook_owner do
-    it "list published ebooks" do
-      allow(Ebook).to receive(:published).and_return(Ebook.where(id: ebook.id))
+  describe "GET /index" do
+    it "list published ebooks", :authenticated do
+      ebook = create(:ebook, :published)
 
       get ebooks_path
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include(CGI.escapeHTML(ebook.title))
     end
+
+    it "returns seller's ebooks", :authenticated_seller_with_ebooks do
+      debugger
+      get ebooks_path
+
+      expect(assigns(:ebooks).to_a).to match_array(seller_ebooks)
+    end
   end
+
+  describe "GET #new", :authenticated do
+    it "returns success" do
+      get new_ebook_path
+
+      expect(response).to be_successful
+      expect(response).to render_template(:new)
+    end
+  end
+
+  describe "POST /create", :authenticated_seller do
+    it "returns success" do
+      expect {
+        post ebooks_path,
+          params: {
+            ebook: attributes_for(
+              :ebook,
+              user_id: current_user.id,
+              author_id: create(:author).id
+            )
+          }
+        }.to change { Ebook.count }.by 1
+
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(ebook_path(Ebook.last))
+    end
+  end
+
   describe "GET /show", :authenticated_ebook_owner do
     it "records view" do
       allow(Ebook).to receive(:find).and_return(ebook)
