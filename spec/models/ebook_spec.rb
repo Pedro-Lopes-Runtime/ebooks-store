@@ -2,11 +2,15 @@ require 'rails_helper'
 
 
 RSpec.describe Ebook, type: :model do
-  subject { create(:ebook) }
-  it_behaves_like "a model with status"
+  context do
+    subject { create(:ebook) }
+    it_behaves_like "a model with status"
+  end
 
-  subject { create(:ebook, :draft) }
-  it_behaves_like "a publishable resource"
+  context "draft" do
+    subject { create(:ebook, :draft) }
+    it_behaves_like "a publishable resource"
+  end
 
   context "Instantiate Ebook" do
     it "is valid with valid attributes" do
