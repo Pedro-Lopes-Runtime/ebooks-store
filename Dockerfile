@@ -58,7 +58,8 @@ COPY . .
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN ./bin/rails assets:precompile
+# Use SECRET_KEY_BASE from environment if available (e.g., from Render), otherwise generate a temporary one
+RUN bash -c 'export SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(ruby -e "require \"securerandom\"; puts SecureRandom.hex(64)")} && ./bin/rails assets:precompile'
 
 
 
