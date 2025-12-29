@@ -54,7 +54,7 @@ gem "will_paginate", "~> 4.0"
 
 gem "rspec-rails"
 
-gem "shoulda-matchers", "~> 6.0"
+gem "shoulda-matchers", "~> 7.0"
 
 gem "faker"
 
