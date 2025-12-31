@@ -1,12 +1,12 @@
 class UserMailer < ApplicationMailer
   def sale_commission
-    @ebook = params[:ebook]
+    @ebook = Ebook.find(params[:ebook_id])
     seller = @ebook.user
     mail(to: seller.email, subjet: "One of your ebooks has been purchased")
   end
 
   def ebook_statistics
-    @ebook = params[:ebook]
+    @ebook = Ebook.find(params[:ebook_id])
     seller = @ebook.user
     @statistics = @ebook.ebook_statistic
     mail(to: seller.email, subjet: "Ebook Statistics")

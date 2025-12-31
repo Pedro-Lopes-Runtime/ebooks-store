@@ -14,7 +14,6 @@ class Purchase < ApplicationRecord
   end
 
   def trigger_notifications
-    UserMailer.with(ebook: self.ebook).sale_commission.deliver_later
-    UserMailer.with(ebook: self.ebook).ebook_statistics.deliver_later
+    HardJob.perform_async(self.ebook.id)
   end
 end
