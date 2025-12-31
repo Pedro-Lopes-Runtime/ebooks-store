@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sidekiq/testing'
 include ActiveJob::TestHelper
 
 RSpec.describe Purchase, :with_ebook, type: :model do
@@ -10,18 +11,9 @@ RSpec.describe Purchase, :with_ebook, type: :model do
 
   context "when purchased is created" do
     it "should trigger notifications" do
-      mail_double = double(deliver_later: true)
-
-      allow(UserMailer).to receive(:with).with(ebook: ebook).and_return(UserMailer)
-      allow(UserMailer).to receive(:sale_commission).and_return(mail_double)
-      allow(UserMailer).to receive(:ebook_statistics).and_return(mail_double)
-
+      expect(HardJob.jobs.size).to eq 0
       create(:purchase, ebook: ebook)
-
-      expect(UserMailer).to have_received(:with).with(ebook: ebook).twice
-      expect(UserMailer).to have_received(:sale_commission)
-      expect(UserMailer).to have_received(:ebook_statistics)
-      expect(mail_double).to have_received(:deliver_later).twice
+      expect(HardJob.jobs.size).to eq 1
     end
 
     it "should update ebook statistics" do
